@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+appgen:
+  db-url: jdbc:mysql://localhost:3306/
+  db-user: root
+  db-pass: password
+  db-name: test
+
