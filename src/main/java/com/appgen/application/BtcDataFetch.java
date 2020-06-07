@@ -1,10 +1,7 @@
 package com.appgen.application;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
-
-import javax.xml.crypto.Data;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,18 +12,15 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 public class BtcDataFetch extends Thread {
 	private static final String URL = "https://www.buybitcoinworldwide.com/how-many-bitcoins-are-there/";
 
 	public void run() {
 		long start = System.currentTimeMillis();
-		System.setProperty("webdriver.chrome.driver", "D:/downloads/chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", "src/main/resources/chromedriver.exe");
 		Document doc = null;
 		String hashRateDoc = null;
 		String difficultyDoc = null;
