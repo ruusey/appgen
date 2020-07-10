@@ -27,8 +27,7 @@ public class AppgenMain implements CommandLineRunner{
     @Autowired
     private HashMap<Class<?>, Dao<? extends DatabaseEntity, ?>> daoFactory;
 //    
-    @SuppressWarnings("unchecked")
-	@Override
+    @Override
     public void run(String... args) throws Exception {
         LOGGER.info("Initializing Appgen Service...");
        
@@ -42,13 +41,11 @@ public class AppgenMain implements CommandLineRunner{
 				e.printStackTrace();
 			}
         });
-        Account acc = new Account("ru","password");
+       
         
-        Dao<Account,Integer> daoAcc = (Dao<Account,Integer>)daoFactory.get(Account.class);
-        Dao<Order,Integer> daoOrder = (Dao<Order,Integer>)daoFactory.get(Order.class);
-        daoAcc.create(acc);
-        daoOrder.create(new Order(acc,1,99.0f,1));
-        BtcDataFetch fetch = new BtcDataFetch();
+//        daoAcc.create(acc);
+//        daoOrder.create(new Order(acc,1,99.0f,1));
+//        BtcDataFetch fetch = new BtcDataFetch();
 //		fetch.start();
       
 

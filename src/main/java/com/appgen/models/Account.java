@@ -63,4 +63,10 @@ public class Account extends DatabaseEntity{
 		}
 		return name.equals(((Account) other).name);
 	}
+
+	@Override
+	public String toString() {
+		return "Account [name=" + name + ", password=" + password + ", orders=" + orders + "]";
+	}
+	
 }

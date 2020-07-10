@@ -7,6 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "orders")
 public class Order extends DatabaseEntity {
 
+	
 	public static final String ACCOUNT_ID_FIELD_NAME = "account_id";
 
 	@JsonIgnore
@@ -64,4 +65,12 @@ public class Order extends DatabaseEntity {
 	public void setPrice(float price) {
 		this.price = price;
 	}
+
+	@Override
+	public String toString() {
+		return "Order [account=" + account + ", itemNumber=" + itemNumber + ", quantity=" + quantity + ", price="
+				+ price + "]";
+	}
+	
+
 }
