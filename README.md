@@ -1,7 +1,11 @@
-# appgen
- Model a database in Java and run!
+# APPGEN
+Model a database in Java and run!
  
-### Create Models under package:
- `appgen/src/main/java/com/appgen/models/`
+### CONFIGURE
+`appgen/src/main/resources/application.yaml`
+
+### CREATE MODELS:
+`appgen/src/main/java/com/appgen/models/`
+ 
 ### RUN
 `./gradlew bootRun`
