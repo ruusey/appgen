@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.appgen.models.DatabaseEntity;
+import com.appgen.models.Order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,11 +75,12 @@ public class RestService {
 			 Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class.forName("com.appgen.models."+serviceName);
 	         ObjectMapper mapper = new ObjectMapper();
 	         mapper.registerModule(new GuavaModule());
-	         mapper.registerSubtypes(cls);
+	         mapper.registerSubtypes(cls,Order.class);
 	         Object o = mapper.readValue(entity, cls);
 	         
 	         Dao dao = daoFactory.get(o.getClass());
-	         return dao.create(o);
+	         
+	         return dao.createOrUpdate(o).getNumLinesChanged();
 	      } catch(ClassNotFoundException ex) {
 	         System.out.println(ex.toString());
 	      }

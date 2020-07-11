@@ -28,7 +28,6 @@ public class Account extends DatabaseEntity{
 
 	@DatabaseField(columnName = "password")
 	private String password;
-
 	@JsonIgnore
 	@ForeignCollectionField(eager = false)
 	@JsonManagedReference
@@ -67,6 +66,7 @@ public class Account extends DatabaseEntity{
 		if(this.orders==null) return new ArrayList<Order>();
 		return new ArrayList<Order>(this.orders);
 	}
+
 	@JsonIgnore
 	public ForeignCollection<Order> getOrders1(){
 		return this.orders;
