@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import com.appgen.models.Account;
 import com.appgen.models.DatabaseEntity;
-import com.appgen.models.Order;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.spring.TableCreator;
 import com.j256.ormlite.table.TableUtils;

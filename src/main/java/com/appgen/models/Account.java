@@ -1,5 +1,20 @@
 package com.appgen.models;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.j256.ormlite.dao.BaseDaoImpl;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -7,15 +22,17 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "accounts")
 public class Account extends DatabaseEntity{
-
+	
 	@DatabaseField(columnName = "name", canBeNull = false)
 	private String name;
 
 	@DatabaseField(columnName = "password")
 	private String password;
 
-	@ForeignCollectionField
-	private ForeignCollection<Order> orders=null;
+	@JsonIgnore
+	@ForeignCollectionField(eager = false)
+	@JsonManagedReference
+	private ForeignCollection<Order> orders;
 
 	Account() {
 		// all persisted classes must define a no-arg constructor with at least package visibility
@@ -45,11 +62,15 @@ public class Account extends DatabaseEntity{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	public ForeignCollection<Order> getOrders() {
-		return orders;
+	@JsonProperty("orders")
+	public ArrayList<Order> getOrders(){
+		if(this.orders==null) return new ArrayList<Order>();
+		return new ArrayList<Order>(this.orders);
 	}
-
+	@JsonIgnore
+	public ForeignCollection<Order> getOrders1(){
+		return this.orders;
+	}
 
 	@Override
 	public int hashCode() {
@@ -64,9 +85,6 @@ public class Account extends DatabaseEntity{
 		return name.equals(((Account) other).name);
 	}
 
-	@Override
-	public String toString() {
-		return "Account [name=" + name + ", password=" + password + ", orders=" + orders + "]";
-	}
+	
 	
 }

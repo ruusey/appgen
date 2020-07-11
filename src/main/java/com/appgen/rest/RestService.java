@@ -74,6 +74,7 @@ public class RestService {
 			 Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class.forName("com.appgen.models."+serviceName);
 	         ObjectMapper mapper = new ObjectMapper();
 	         mapper.registerModule(new GuavaModule());
+	         mapper.registerSubtypes(cls);
 	         Object o = mapper.readValue(entity, cls);
 	         
 	         Dao dao = daoFactory.get(o.getClass());
