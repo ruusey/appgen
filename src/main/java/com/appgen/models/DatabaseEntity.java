@@ -1,8 +1,8 @@
 package com.appgen.models;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.field.DatabaseField;
 
 public class DatabaseEntity {
@@ -16,6 +16,12 @@ public class DatabaseEntity {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	public static <T> List<T> filter(Class<T> clazz, List<?> items) {
+	    return items.stream()
+	        .filter(clazz::isInstance)
+	        .map(clazz::cast)
+	        .collect(Collectors.toList());
 	}
 	
 }

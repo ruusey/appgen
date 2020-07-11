@@ -21,6 +21,7 @@ import com.j256.ormlite.spring.TableCreator;
 import com.j256.ormlite.table.TableUtils;
 
 @SpringBootTest
+
 class AppgenApplicationTests {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AppgenApplicationTests.class);
 	@Autowired
