@@ -1,6 +1,7 @@
 package com.appgen.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -10,8 +11,9 @@ public class Order extends DatabaseEntity {
 	
 	public static final String ACCOUNT_ID_FIELD_NAME = "account_id";
 
-	@DatabaseField(foreign = true, foreignAutoRefresh = true, columnName = ACCOUNT_ID_FIELD_NAME)
 	@JsonBackReference
+	@JsonIgnore
+	@DatabaseField(foreign = true, columnName = ACCOUNT_ID_FIELD_NAME)
 	private Account account;
 
 	@DatabaseField
@@ -29,6 +31,11 @@ public class Order extends DatabaseEntity {
 
 	public Order(Account account, int itemNumber, float price, int quantity) {
 		this.account = account;
+		this.itemNumber = itemNumber;
+		this.price = price;
+		this.quantity = quantity;
+	}
+	public Order(int itemNumber, float price, int quantity) {
 		this.itemNumber = itemNumber;
 		this.price = price;
 		this.quantity = quantity;

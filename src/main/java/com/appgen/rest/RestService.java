@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,8 +19,11 @@ import com.appgen.models.Order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.collect.Lists;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedUpdate;
+import com.j256.ormlite.stmt.Where;
 
 @RestController
 @SuppressWarnings("rawtypes")
@@ -40,7 +44,25 @@ public class RestService {
 		}
 		return null;
 	}
-
+	@SuppressWarnings("unchecked")
+	@PutMapping(value = "/v1/{service}/{id}")
+	public Object updateEntity(@PathVariable String service, @PathVariable Integer id,@RequestBody String entity) throws SQLException {
+		try {
+			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
+			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class.forName("com.appgen.models." + serviceName);
+			Dao dao = daoFactory.get(cls);
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.registerModule(new GuavaModule());
+			JsonNode newNode = mapper.readTree(entity);
+			DatabaseEntity o = mapper.readValue(newNode.toString(), cls);
+			o.setId(id);
+			
+			return dao.update(o);
+		} catch (ClassNotFoundException | JsonProcessingException ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
 	@SuppressWarnings("unchecked")
 	@GetMapping("/v1/{service}")
 	public List<?> getAllEntities(@PathVariable String service) throws SQLException {

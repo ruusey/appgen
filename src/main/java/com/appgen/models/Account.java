@@ -1,32 +1,34 @@
 package com.appgen.models;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.google.common.collect.Lists;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "accounts")
-public class Account extends DatabaseEntity{
-	
+public class Account extends DatabaseEntity {
+
 	@DatabaseField(columnName = "name", canBeNull = false)
 	private String name;
 
 	@DatabaseField(columnName = "password")
 	private String password;
-	
+
 	@JsonIgnore
 	@ForeignCollectionField(eager = false)
 	@JsonManagedReference
 	private ForeignCollection<Order> orders;
 
 	Account() {
-		// all persisted classes must define a no-arg constructor with at least package visibility
+		// all persisted classes must define a no-arg constructor with at least package
+		// visibility
 	}
 
 	public Account(String name) {
@@ -53,20 +55,12 @@ public class Account extends DatabaseEntity{
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	@JsonSetter
-	public void setOrders(Collection<Order> orders){
-		orders.forEach(order->{
-			if(!(this.orders==null)) this.orders.add(order);
-		});
-	}
 	@JsonProperty("orders")
-	public Collection<Order> getOrders(){
-		if(this.orders==null) return Collections.singletonList(null);
-		return Collections.unmodifiableCollection(this.orders);
+	public List<Order> getOrders() {
+		return new ArrayList<Order>(this.orders);
 	}
-
 	@JsonIgnore
-	public ForeignCollection<Order> getOrders1(){
+	public ForeignCollection<Order> getOrders1() {
 		return this.orders;
 	}
 
@@ -83,6 +77,4 @@ public class Account extends DatabaseEntity{
 		return name.equals(((Account) other).name);
 	}
 
-	
-	
 }
