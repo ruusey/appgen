@@ -40,7 +40,7 @@ public class Order extends DatabaseEntity {
 		this.price = price;
 		this.quantity = quantity;
 	}
-
+	@JsonIgnore
 	public Account getAccount() {
 		return account;
 	}

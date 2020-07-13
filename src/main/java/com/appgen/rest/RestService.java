@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.collect.Lists;
 import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.stmt.PreparedUpdate;
-import com.j256.ormlite.stmt.Where;
-
+@CrossOrigin
 @RestController
 @SuppressWarnings("rawtypes")
 public class RestService {
@@ -44,32 +43,36 @@ public class RestService {
 		}
 		return null;
 	}
+
 	@SuppressWarnings("unchecked")
 	@PutMapping(value = "/v1/{service}/{id}")
-	public Object updateEntity(@PathVariable String service, @PathVariable Integer id,@RequestBody String entity) throws SQLException {
+	public Object updateEntity(@PathVariable String service, @PathVariable Integer id, @RequestBody String entity)
+			throws SQLException {
 		try {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
-			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class.forName("com.appgen.models." + serviceName);
+			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class
+					.forName("com.appgen.models." + serviceName);
 			Dao dao = daoFactory.get(cls);
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.registerModule(new GuavaModule());
 			JsonNode newNode = mapper.readTree(entity);
 			DatabaseEntity o = mapper.readValue(newNode.toString(), cls);
 			o.setId(id);
-			
+
 			return dao.update(o);
 		} catch (ClassNotFoundException | JsonProcessingException ex) {
 			ex.printStackTrace();
 		}
 		return null;
 	}
+
 	@SuppressWarnings("unchecked")
 	@GetMapping("/v1/{service}")
-	public List<?> getAllEntities(@PathVariable String service) throws SQLException {
+	public List<DatabaseEntity> getAllEntities(@PathVariable String service) throws SQLException {
 		try {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
-			Class<?> cls = Class.forName("com.appgen.models." + serviceName);
-			Dao<?, Integer> dao = (Dao<?, Integer>) daoFactory.get(cls);
+			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class.forName("com.appgen.models." + serviceName);
+			Dao dao = daoFactory.get(cls);
 			return dao.queryForAll();
 		} catch (ClassNotFoundException ex) {
 			System.out.println(ex.toString());
@@ -103,7 +106,6 @@ public class RestService {
 			JsonNode newNode = mapper.readTree(entity);
 			ArrayList<DatabaseEntity> list = Lists.newArrayList();
 
-			
 			Dao dao = daoFactory.get(serviceClass);
 			if (newNode.isArray()) {
 				for (JsonNode node : newNode)

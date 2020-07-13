@@ -7,3 +7,10 @@ appgen:
   db-pass: password
   db-name: test
 
+spring:
+  jackson:
+    serialization:
+      INDENT_OUTPUT: false
+      write-dates-as-timestamps: false
+      FAIL_ON_EMPTY_BEANS: false
+      FAIL_ON_SELF_REFERENCES: false 
