@@ -1,8 +1,5 @@
 package com.appgen.models;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.j256.ormlite.field.DatabaseField;
 
 public class DatabaseEntity {
