@@ -3,8 +3,8 @@ package com.appgen;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,11 @@ import com.appgen.models.DatabaseEntity;
 import com.appgen.models.Order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.spring.TableCreator;
 import com.j256.ormlite.table.TableUtils;
 
 @SpringBootTest
-
 class AppgenApplicationTests {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AppgenApplicationTests.class);
 	@Autowired
@@ -35,6 +33,7 @@ class AppgenApplicationTests {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void checkTest() throws JsonProcessingException {
 		Account acc = new Account("ruusey@gmail.com", "my_password");
