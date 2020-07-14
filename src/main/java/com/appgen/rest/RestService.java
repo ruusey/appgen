@@ -15,14 +15,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.appgen.config.Order;
 import com.appgen.models.DatabaseEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.collect.Lists;
 import com.j256.ormlite.dao.Dao;
+
 @CrossOrigin
 @RestController
 @SuppressWarnings("rawtypes")
@@ -30,13 +29,17 @@ public class RestService {
 	@Autowired
 	private HashMap<Class<?>, Dao<? extends DatabaseEntity, ?>> daoFactory;
 
+	@Autowired
+	private ObjectMapper serDes;
+
 	@SuppressWarnings("unchecked")
 	@GetMapping("/v1/{service}/{id}")
 	public Object getEntity(@PathVariable String service, @PathVariable Integer id) throws SQLException {
 		try {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
-			Class<?> cls = Class.forName("com.appgen.models." + serviceName);
-			Dao<?, Integer> dao = (Dao<?, Integer>) daoFactory.get(cls);
+			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class
+					.forName("com.appgen.models." + serviceName);
+			Dao dao = daoFactory.get(cls);
 			return dao.queryForId(id);
 		} catch (ClassNotFoundException ex) {
 			System.out.println(ex.toString());
@@ -53,10 +56,9 @@ public class RestService {
 			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class
 					.forName("com.appgen.models." + serviceName);
 			Dao dao = daoFactory.get(cls);
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.registerModule(new GuavaModule());
-			JsonNode newNode = mapper.readTree(entity);
-			DatabaseEntity o = mapper.readValue(newNode.toString(), cls);
+			JsonNode newNode = serDes.readTree(entity);
+
+			DatabaseEntity o = serDes.readValue(newNode.toString(), cls);
 			o.setId(id);
 
 			return dao.update(o);
@@ -71,7 +73,8 @@ public class RestService {
 	public List<DatabaseEntity> getAllEntities(@PathVariable String service) throws SQLException {
 		try {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
-			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class.forName("com.appgen.models." + serviceName);
+			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class
+					.forName("com.appgen.models." + serviceName);
 			Dao dao = daoFactory.get(cls);
 			return dao.queryForAll();
 		} catch (ClassNotFoundException ex) {
@@ -85,8 +88,9 @@ public class RestService {
 	public int deleteEntity(@PathVariable String service, @PathVariable Integer id) throws SQLException {
 		try {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
-			Class<?> cls = Class.forName("com.appgen.models." + serviceName);
-			Dao<?, Integer> dao = (Dao<?, Integer>) daoFactory.get(cls);
+			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class
+					.forName("com.appgen.models." + serviceName);
+			Dao dao = daoFactory.get(cls);
 			return dao.deleteById(id);
 		} catch (ClassNotFoundException ex) {
 			System.out.println(ex.toString());
@@ -102,14 +106,14 @@ public class RestService {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
 			Class<? extends DatabaseEntity> serviceClass = (Class<? extends DatabaseEntity>) Class
 					.forName("com.appgen.models." + serviceName);
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode newNode = mapper.readTree(entity);
+
+			JsonNode newNode = serDes.readTree(entity);
 			ArrayList<DatabaseEntity> list = Lists.newArrayList();
 
 			Dao dao = daoFactory.get(serviceClass);
 			if (newNode.isArray()) {
 				for (JsonNode node : newNode)
-					list.add(mapper.readValue(node.toPrettyString(), serviceClass));
+					list.add(serDes.readValue(node.toPrettyString(), serviceClass));
 
 				dao.create(list);
 				list.forEach(item -> {
@@ -121,7 +125,7 @@ public class RestService {
 					}
 				});
 			} else {
-				dao.create(mapper.readValue(newNode.toPrettyString(), serviceClass));
+				dao.create(serDes.readValue(newNode.toPrettyString(), serviceClass));
 				dao.updateBuilder().updateColumnValue("account_id", id).update();
 
 			}
@@ -144,20 +148,18 @@ public class RestService {
 			Class<? extends DatabaseEntity> subServiceClass = (Class<? extends DatabaseEntity>) Class
 					.forName("com.appgen.models." + modelName);
 
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.registerSubtypes(serviceClass, Order[].class);
-			JsonNode newNode = mapper.readTree(entity);
+			JsonNode newNode = serDes.readTree(entity);
 			JsonNode newNode1 = newNode.findValue(model.toLowerCase() + "s");
 
 			ArrayList<DatabaseEntity> list = Lists.newArrayList();
 			if (newNode1.isArray()) {
 				for (JsonNode node : newNode1) {
-					list.add(mapper.readValue(node.toPrettyString(), subServiceClass));
+					list.add(serDes.readValue(node.toPrettyString(), subServiceClass));
 				}
 			}
 			Dao serviceDao = daoFactory.get(serviceClass);
 			Dao subServiceDao = daoFactory.get(subServiceClass);
-			DatabaseEntity serviceObject = mapper.treeToValue(newNode, serviceClass);
+			DatabaseEntity serviceObject = serDes.treeToValue(newNode, serviceClass);
 
 			serviceDao.createIfNotExists(serviceObject);
 

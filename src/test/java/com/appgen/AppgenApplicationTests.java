@@ -5,7 +5,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,8 @@ class AppgenApplicationTests {
 	public HashMap<Class<?>, Dao<? extends DatabaseEntity, ?>> daoFactory;
 	@Autowired
 	private TableCreator tableCreator;
-	private ObjectMapper gson = new ObjectMapper();
+	@Autowired
+	private ObjectMapper serDes;
 
 	@Test
 	void contextLoads() throws Exception {
@@ -89,9 +89,9 @@ class AppgenApplicationTests {
 			daoGeo.update(geoLoc2);
 			daoGeo.update(geoLoc3);
 
-
-			LOGGER.info(gson.writeValueAsString(daoCli.queryForId(1)));
-			LOGGER.info(gson.writeValueAsString(daoSp.queryForId(1)));
+			
+			LOGGER.info(serDes.writeValueAsString(daoCli.queryForId(1)));
+			LOGGER.info(serDes.writeValueAsString(daoSp.queryForId(1)));
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -1,6 +1,5 @@
 package com.appgen.models.builders;
 
-import com.appgen.config.Account;
 import com.appgen.models.Client;
 import com.appgen.models.GeoLocation;
 import com.appgen.models.JobRequest;

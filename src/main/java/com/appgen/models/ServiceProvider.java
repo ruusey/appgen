@@ -2,7 +2,6 @@ package com.appgen.models;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "service_providers")

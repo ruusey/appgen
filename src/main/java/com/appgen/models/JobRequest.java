@@ -1,6 +1,5 @@
 package com.appgen.models;
 
-import com.appgen.config.Account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
