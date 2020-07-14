@@ -1,8 +1,9 @@
-package com.appgen.models;
+package com.appgen.config;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.appgen.models.DatabaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;

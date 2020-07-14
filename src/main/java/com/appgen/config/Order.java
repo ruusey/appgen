@@ -1,5 +1,6 @@
-package com.appgen.models;
+package com.appgen.config;
 
+import com.appgen.models.DatabaseEntity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.j256.ormlite.field.DatabaseField;

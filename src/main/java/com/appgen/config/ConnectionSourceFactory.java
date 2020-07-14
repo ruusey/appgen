@@ -14,9 +14,12 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
-import com.appgen.models.Account;
+
+import com.appgen.models.Client;
 import com.appgen.models.DatabaseEntity;
-import com.appgen.models.Order;
+import com.appgen.models.GeoLocation;
+import com.appgen.models.JobRequest;
+import com.appgen.models.ServiceProvider;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
@@ -75,8 +78,11 @@ public class ConnectionSourceFactory {
 	@Bean(name = "genClasses")
 	public List<Class<? extends DatabaseEntity>> genClasses() {
 		ArrayList<Class<? extends DatabaseEntity>> list = new ArrayList<>();
-		list.add(Account.class);
-		list.add(Order.class);
+		list.add(Client.class);
+		list.add(ServiceProvider.class);
+		list.add(JobRequest.class);
+		list.add(GeoLocation.class);
+		
 		return list;
 	}
 
