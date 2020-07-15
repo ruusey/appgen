@@ -11,7 +11,7 @@ public class JobRequest extends DatabaseEntity {
 	private String shortDescription;
 	@DatabaseField(columnName = "long_description", canBeNull = false)
 	private String longDescription;
-	@DatabaseField(canBeNull = true, foreign = true)
+	@DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh=true)
 	private GeoLocation loc;
 	@DatabaseField(columnName = "pay", canBeNull = false)
 	private double pay;
