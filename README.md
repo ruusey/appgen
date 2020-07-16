@@ -22,6 +22,9 @@ To build an executable `.jar` of **Appgen** execute `./gradlew build` from the r
 To start **Appgen** simply execute `./gradlew bootRun`
 This will attempt to connect to and create the schema for your models if one does not exist. It will then expose REST services for your models in the following pattern:
 > **GET**: `/v1/{model_name_camel_case}`
+
 > **GET**: `/v1/{model_name_camel_case}/{id}`
+
 > **POST**: `/v1/{model_name_camel_case}`
+
 > **PUT**: `/v1/{model_name_camel_case}/{id}`
