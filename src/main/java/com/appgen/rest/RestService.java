@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,7 @@ import com.j256.ormlite.dao.Dao;
 @RestController
 @SuppressWarnings("rawtypes")
 public class RestService {
+	
 	@Autowired
 	private HashMap<Class<?>, Dao<? extends DatabaseEntity, ?>> daoFactory;
 
@@ -33,23 +36,26 @@ public class RestService {
 
 	@SuppressWarnings("unchecked")
 	@GetMapping("/v1/{service}/{id}")
-	public Object getEntity(@PathVariable String service, @PathVariable Integer id) throws SQLException {
+	public ResponseEntity<?> getEntity(@PathVariable String service, @PathVariable Integer id) throws SQLException {
 		try {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
 			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class
 					.forName("com.appgen.models." + serviceName);
 			Dao dao = daoFactory.get(cls);
-			return dao.queryForId(id);
+			DatabaseEntity entity = (DatabaseEntity) dao.queryForId(id);
+
+			return entity == null ? new ResponseEntity<DatabaseEntity>(entity, HttpStatus.OK)
+					: new ResponseEntity<>("Entity not found for given id", HttpStatus.BAD_REQUEST);
 		} catch (ClassNotFoundException ex) {
-			System.out.println(ex.toString());
+			ex.printStackTrace();
 		}
-		return null;
+		return new ResponseEntity<>("Entity not found", HttpStatus.BAD_REQUEST);
 	}
 
 	@SuppressWarnings("unchecked")
 	@PutMapping(value = "/v1/{service}/{id}")
-	public Object updateEntity(@PathVariable String service, @PathVariable Integer id, @RequestBody String entity)
-			throws SQLException {
+	public ResponseEntity<?> updateEntityById(@PathVariable String service, @PathVariable Integer id,
+			@RequestBody String entity) throws SQLException {
 		try {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
 			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class
@@ -59,48 +65,69 @@ public class RestService {
 
 			DatabaseEntity o = serDes.readValue(newNode.toString(), cls);
 			o.setId(id);
-
-			return dao.update(o);
+			dao.update(o);
+			return new ResponseEntity<>("Updated entity", HttpStatus.OK);
 		} catch (ClassNotFoundException | JsonProcessingException ex) {
 			ex.printStackTrace();
 		}
-		return null;
+		return new ResponseEntity<>("Entity not found", HttpStatus.BAD_REQUEST);
+	}
+
+	@SuppressWarnings("unchecked")
+	@PutMapping(value = "/v1/{service}")
+	public ResponseEntity<?> updateEntity(@PathVariable String service, @RequestBody String entity)
+			throws SQLException {
+		try {
+			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
+			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class
+					.forName("com.appgen.models." + serviceName);
+			Dao dao = daoFactory.get(cls);
+			JsonNode newNode = serDes.readTree(entity);
+
+			DatabaseEntity o = serDes.readValue(newNode.toString(), cls);
+			dao.update(o);
+			return new ResponseEntity<>("Updated entity", HttpStatus.OK);
+		} catch (ClassNotFoundException | JsonProcessingException ex) {
+			ex.printStackTrace();
+		}
+		return new ResponseEntity<>("Unable to update entity", HttpStatus.BAD_REQUEST);
 	}
 
 	@SuppressWarnings("unchecked")
 	@GetMapping("/v1/{service}")
-	public List<DatabaseEntity> getAllEntities(@PathVariable String service) throws SQLException {
+	public ResponseEntity<?> getAllEntities(@PathVariable String service) throws SQLException {
 		try {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
 			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class
 					.forName("com.appgen.models." + serviceName);
 			Dao dao = daoFactory.get(cls);
-			return dao.queryForAll();
+			return new ResponseEntity<List<DatabaseEntity>>(dao.queryForAll(), HttpStatus.OK);
 		} catch (ClassNotFoundException ex) {
-			System.out.println(ex.toString());
+			ex.printStackTrace();
 		}
-		return null;
+		return new ResponseEntity<>("Entity not found", HttpStatus.BAD_REQUEST);
 	}
 
 	@SuppressWarnings("unchecked")
 	@DeleteMapping("/v1/{service}/{id}")
-	public int deleteEntity(@PathVariable String service, @PathVariable Integer id) throws SQLException {
+	public ResponseEntity<?> deleteEntity(@PathVariable String service, @PathVariable Integer id) throws SQLException {
 		try {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
 			Class<? extends DatabaseEntity> cls = (Class<? extends DatabaseEntity>) Class
 					.forName("com.appgen.models." + serviceName);
 			Dao dao = daoFactory.get(cls);
-			return dao.deleteById(id);
+			dao.deleteById(id);
+			return new ResponseEntity<>("Deleted entity", HttpStatus.OK);
 		} catch (ClassNotFoundException ex) {
-			System.out.println(ex.toString());
+			ex.printStackTrace();
 		}
-		return -1;
+		return new ResponseEntity<>("Entity not found", HttpStatus.BAD_REQUEST);
 	}
 
 	@SuppressWarnings("unchecked")
 	@PostMapping(value = "/v1/{service}/{id}", consumes = "application/json", produces = "application/json")
-	public int addSubEntity(@PathVariable String service, @PathVariable Integer id, @RequestBody String entity)
-			throws SQLException {
+	public ResponseEntity<?> addSubEntity(@PathVariable String service, @PathVariable Integer id,
+			@RequestBody String entity) throws SQLException {
 		try {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
 			Class<? extends DatabaseEntity> serviceClass = (Class<? extends DatabaseEntity>) Class
@@ -123,22 +150,23 @@ public class RestService {
 						e.printStackTrace();
 					}
 				});
+				return new ResponseEntity<>("Created new list of sub entities", HttpStatus.OK);
 			} else {
 				dao.create(serDes.readValue(newNode.toPrettyString(), serviceClass));
 				dao.updateBuilder().updateColumnValue("account_id", id).update();
-
+				return new ResponseEntity<>("Created new sub entity", HttpStatus.OK);
 			}
 
 		} catch (ClassNotFoundException | JsonProcessingException ex) {
-			System.out.println(ex.toString());
+			ex.printStackTrace();
 		}
-		return -1;
+		return new ResponseEntity<>("Parent entity not found", HttpStatus.BAD_REQUEST);
 	}
 
 	@SuppressWarnings("unchecked")
 	@PostMapping(value = "/v1/{service}/{id}/{model}", consumes = "application/json", produces = "application/json")
-	public int createEntity(@PathVariable String service, @PathVariable int id, @PathVariable String model,
-			@RequestBody String entity) throws SQLException, IOException {
+	public ResponseEntity<?> createEntity(@PathVariable String service, @PathVariable int id,
+			@PathVariable String model, @RequestBody String entity) throws SQLException, IOException {
 		try {
 			String serviceName = service.substring(0, 1).toUpperCase() + service.substring(1);
 			String modelName = model.substring(0, 1).toUpperCase() + model.substring(1);
@@ -177,11 +205,11 @@ public class RestService {
 				e.printStackTrace();
 			}
 
-			return 1;
+			return new ResponseEntity<>("Created new entity", HttpStatus.OK);
 		} catch (ClassNotFoundException ex) {
-			System.out.println(ex.toString());
+			ex.printStackTrace();
 		}
-		return -1;
+		return new ResponseEntity<>("Error creating entity", HttpStatus.BAD_REQUEST);
 	}
 
 }
