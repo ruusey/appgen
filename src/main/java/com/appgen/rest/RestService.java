@@ -43,9 +43,9 @@ public class RestService {
 					.forName("com.appgen.models." + serviceName);
 			Dao dao = daoFactory.get(cls);
 			DatabaseEntity entity = (DatabaseEntity) dao.queryForId(id);
-
-			return entity == null ? new ResponseEntity<DatabaseEntity>(entity, HttpStatus.OK)
-					: new ResponseEntity<>("Entity not found for given id", HttpStatus.BAD_REQUEST);
+			
+			return entity == null ? new ResponseEntity<>("Entity not found for given id", HttpStatus.BAD_REQUEST)
+					: new ResponseEntity<DatabaseEntity>(entity, HttpStatus.OK);
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
