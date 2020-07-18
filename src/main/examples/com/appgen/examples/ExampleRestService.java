@@ -42,5 +42,19 @@ public class ExampleRestService {
 		}
 		return new ResponseEntity<>("Entity not found", HttpStatus.BAD_REQUEST);
 	}
+	@SuppressWarnings("unchecked")
+	@GetMapping("/v2/geoLocation/1")
+	public ResponseEntity<?> testGetJobRequestById(@PathVariable String service) {
+		try {
+			Dao dao = daoFactory.get(ReflectionUtils.getEntityClassWithService(service));
+			List<DatabaseEntity> entity = dao.queryForAll();
+
+			return entity == null ? new ResponseEntity<>("Entity not found for given id", HttpStatus.BAD_REQUEST)
+					: new ResponseEntity<List<DatabaseEntity>>(entity, HttpStatus.OK);
+		} catch (ClassNotFoundException | SQLException ex) {
+			ex.printStackTrace();
+		}
+		return new ResponseEntity<>("Entity not found", HttpStatus.BAD_REQUEST);
+	}
 	
 }
