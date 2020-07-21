@@ -1,10 +1,5 @@
-
+# Ignore Gradle project-specific cache directory
 .gradle
 
-
-appgen-core/bin
-appgen-core/build
-appgen-core/.gradle
-
-appgen-frontend/node_modules
-appgen-frontend/dist
+# Ignore Gradle build output directory
+build
