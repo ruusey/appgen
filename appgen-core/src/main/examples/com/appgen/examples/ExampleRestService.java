@@ -1,6 +1,4 @@
-package com.appgen.examples;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
