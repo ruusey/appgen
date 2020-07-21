@@ -1,3 +1,10 @@
-/bin
+
 .gradle
-.settings
+
+
+appgen-core/bin
+appgen-core/build
+appgen-core/.gradle
+
+appgen-frontend/node_modules
+appgen-frontend/dist
