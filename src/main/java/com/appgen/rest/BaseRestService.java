@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.j256.ormlite.dao.Dao;
 
-@CrossOrigin
+
 @RestController
 @SuppressWarnings("rawtypes")
 public class BaseRestService {
@@ -41,6 +41,7 @@ public class BaseRestService {
 	public ObjectMapper serDes;
 
 	@SuppressWarnings("unchecked")
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@GetMapping("/v1/{service}/{id}")
 	public ResponseEntity<?> getEntity(@PathVariable String service, @PathVariable Integer id) {
 		try {
@@ -86,6 +87,7 @@ public class BaseRestService {
 //	}
 
 	@SuppressWarnings("unchecked")
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@PutMapping(value = "/v1/{service}")
 	public ResponseEntity<?> updateEntity(@PathVariable String service, @RequestBody String entity) {
 		try {
@@ -104,6 +106,7 @@ public class BaseRestService {
 	}
 
 	@SuppressWarnings("unchecked")
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@GetMapping("/v1/{service}")
 	public ResponseEntity<?> getAllEntities(@PathVariable String service) throws SQLException {
 		try {
@@ -117,6 +120,7 @@ public class BaseRestService {
 	}
 
 	@SuppressWarnings("unchecked")
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@DeleteMapping("/v1/{service}/{id}")
 	public ResponseEntity<?> deleteEntity(@PathVariable String service, @PathVariable Integer id) {
 		try {
@@ -131,6 +135,7 @@ public class BaseRestService {
 	}
 
 	@SuppressWarnings("unchecked")
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@PostMapping(value = "/v1/{service}/{id}", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> addSubEntity(@PathVariable String service, @PathVariable Integer id,
 			@RequestBody String entity) {
@@ -169,6 +174,7 @@ public class BaseRestService {
 	}
 
 	@SuppressWarnings("unchecked")
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@PostMapping(value = "/v1/{service}", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> createSingleEntity(@PathVariable String service, @RequestBody String entity) {
 		try {
@@ -198,6 +204,7 @@ public class BaseRestService {
 	}
 
 	@SuppressWarnings("unchecked")
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@PostMapping(value = "/v1/{service}/{id}/{model}", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> createEntity(@PathVariable String service, @PathVariable int id,
 			@PathVariable String model, @RequestBody String entity) {
