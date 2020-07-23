@@ -1,5 +1,6 @@
 package com.appgen.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "service_providers")
@@ -13,6 +14,7 @@ public class ServiceProvider extends DatabaseEntity {
 	private String firstName = null;
 	@DatabaseField(columnName = "last_name", canBeNull = false)
 	private String lastName = null;
+	@JsonManagedReference(value = "geoloc_sp")
 	@DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh=true)
 	private GeoLocation loc = null;
 	@DatabaseField(columnName = "name", canBeNull = false, defaultValue = "0.0")

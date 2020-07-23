@@ -1,6 +1,8 @@
 package com.appgen.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -11,6 +13,7 @@ public class JobRequest extends DatabaseEntity {
 	private String shortDescription;
 	@DatabaseField(columnName = "long_description", canBeNull = false)
 	private String longDescription;
+	@JsonManagedReference(value = "geoloc_job")
 	@DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh=true)
 	private GeoLocation loc;
 	@DatabaseField(columnName = "pay", canBeNull = false)
@@ -41,6 +44,10 @@ public class JobRequest extends DatabaseEntity {
 		this.client = client;
 	}
 
+	@JsonProperty("clientId")
+	public int getClientId() {
+		return this.client.getId();
+	}
 	public String getFriendlyLocation() {
 		return this.friendlyLocation;
 	}

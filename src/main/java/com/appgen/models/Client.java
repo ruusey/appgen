@@ -27,6 +27,7 @@ public class Client extends DatabaseEntity {
 	@ForeignCollectionField(eager = true)
 	private Collection<JobRequest> jobs;
 
+	@JsonManagedReference(value = "geoloc_client")
 	@DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh = true)
 	private GeoLocation loc;
 

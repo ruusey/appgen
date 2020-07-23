@@ -1,28 +1,25 @@
 package com.appgen.models;
 
-import java.io.Serializable;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "geolocations")
-public class GeoLocation extends DatabaseEntity implements Serializable {
+public class GeoLocation extends DatabaseEntity {
 
-	private static final long serialVersionUID = 1L;
 	@DatabaseField(columnName = "lat", canBeNull = false, defaultValue = "0.0")
 	private double lat;
 	@DatabaseField(columnName = "lng", canBeNull = false, defaultValue = "0.0")
 	private double lng;
 	@DatabaseField(columnName = "date_time", canBeNull = true)
 	private String dateTime;
-	@JsonIgnore
+	@JsonBackReference(value = "geoloc_job")
 	@DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh=true)
 	private JobRequest jobGeoLoc;
-	@JsonIgnore
+	@JsonBackReference(value = "geoloc_client")
 	@DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh=true)
 	private Client clientGeoLoc;
-	@JsonIgnore
+	@JsonBackReference(value = "geoloc_sp")
 	@DatabaseField(canBeNull = true, foreign = true, foreignAutoRefresh=true)
 	private ServiceProvider serviceProviderGeoLoc;
 
