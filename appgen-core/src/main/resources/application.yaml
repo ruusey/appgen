@@ -1,0 +1,18 @@
+server:
+  port: 8080
+
+appgen:
+  db-url: jdbc:mysql://localhost:3306/
+  db-user: root
+  db-pass: password
+  db-name: test
+
+spring:
+  jackson:
+    serialization:
+      INDENT_OUTPUT: false
+      write-dates-as-timestamps: true
+      FAIL_ON_EMPTY_BEANS: false
+      FAIL_ON_SELF_REFERENCES: false 
+springdoc:
+  packagesToScan: com.appgen.rest
