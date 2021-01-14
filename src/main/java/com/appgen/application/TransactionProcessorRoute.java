@@ -18,7 +18,7 @@ public class TransactionProcessorRoute extends SpringRouteBuilder{
 			.id("transaction-route")
 			.marshal(jsonDataFormat)
 			.to("rabbitmq:gpc-transactions?exchangeType=topic&autoDelete=false")
-			.bean(StoreTransactionReceiver.class,"receiveMessage")
+			.bean(StoreTransactionReceiver.class, "receiveMessage")
 		.end();
 		
 	}
