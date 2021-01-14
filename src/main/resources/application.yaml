@@ -8,6 +8,8 @@ appgen:
   db-name: test
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   jackson:
     serialization:
       INDENT_OUTPUT: false
